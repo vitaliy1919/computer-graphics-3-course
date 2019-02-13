@@ -27,7 +27,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource("sample.fxml"));
-        loader.setController(new AppController());
+        loader.setController(new AppController(primaryStage));
         BorderPane pane = (BorderPane)loader.load();
 
         primaryStage.setScene(new Scene(pane));
