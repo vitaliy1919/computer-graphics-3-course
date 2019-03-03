@@ -133,33 +133,41 @@ public class Graph {
         return chains;
     }
 
-    public ArrayList<Pair<List<GraphNode>, Integer>> findChainsContainingPoint(ArrayList<ArrayList<GraphNode>> chains, Point point) {
-        for (int i = 0; i < chains.size() - 1; i++) {
-            int j = 0;
-            int firstJ = -1, secondJ = -1;
-            for (; j < chains.get(i).size() - 1; j++) {
-                if (chains.get(i).get(j).position.y >= point.y && chains.get(i).get(j + 1).position.y <= point.y) {
-                    firstJ = j;
-                    break;
-                }
-            }j = 0;
-            for (; j < chains.get(i + 1).size() - 1; j++) {
-                if (chains.get(i+1).get(j).position.y >= point.y && chains.get(i+1).get(j+1).position.y <= point.y) {
-                    secondJ = j;
-                    break;
-                }
+    private int findPosInChain(ArrayList<GraphNode> chain, Point point) {
+        int l = 0;
+        int r = chain.size();
+        while (r - l >= 2) {
+            int m = l + (r - l) / 2 - 1;
+            if (chain.get(m).position.y >= point.y && chain.get(m + 1).position.y <= point.y) {
+                return m;
+            } else if (chain.get(m).position.y < point.y) {
+                r = m + 1;
+            } else if (chain.get(m + 1).position.y > point.y) {
+                l = m + 1;
             }
-            if (firstJ == -1 || secondJ == -1)
-                continue;
+        }
+        return -1;
+    }
 
-            double a = Point.area(point, chains.get(i).get(firstJ).position, chains.get(i).get(firstJ+1).position);
-            double b = Point.area(point, chains.get(i + 1).get(secondJ).position, chains.get(i + 1).get(secondJ+1).position);
+    public ArrayList<Pair<List<GraphNode>, Integer>> findChainsContainingPoint(ArrayList<ArrayList<GraphNode>> chains, Point point) {
+        int l = 0;
+        int r = chains.size();
+        while (r - l >= 2) {
+            int m = l + ( r - l) / 2 - 1;
+
+            int j = 0;
+            int firstJ = findPosInChain(chains.get(m), point), secondJ = findPosInChain(chains.get(m + 1), point);
+            if (firstJ == -1 || secondJ == -1)
+                return null;
+
+            double a = Point.area(point, chains.get(m).get(firstJ).position, chains.get(m).get(firstJ+1).position);
+            double b = Point.area(point, chains.get(m + 1).get(secondJ).position, chains.get(m + 1).get(secondJ+1).position);
             if ((a > 0 || abs(a) <= 1e-2) && (b < 0 || abs(b) <= 1e-2)) {
                 ArrayList<Pair<List<GraphNode>, Integer>> res = new ArrayList<>();
                 int iter1 = 0, iter2 = 0;
-                ArrayList<GraphNode> i1 = chains.get(i), i2 = chains.get(i + 1);
+                ArrayList<GraphNode> i1 = chains.get(m), i2 = chains.get(m + 1);
                 int start = -1, end = -1, start2 = -1, end2 = -1;
-                while (iter1 < chains.get(i).size() && iter2 < chains.get(i + 1).size()) {
+                while (iter1 < chains.get(m).size() && iter2 < chains.get(m + 1).size()) {
                     if (i1.get(iter1) == i2.get(iter2)) {
                         if (start == -1) {
                             start = iter1;
@@ -180,12 +188,67 @@ public class Graph {
                     else
                         iter1++;
                 }
-                res.add(new Pair<>(chains.get(i).subList(start, end + 1), firstJ));
-                res.add(new Pair<>(chains.get(i + 1).subList(start2, end2 + 1), secondJ));
+                res.add(new Pair<>(chains.get(m).subList(start, end + 1), firstJ));
+                res.add(new Pair<>(chains.get(m + 1).subList(start2, end2 + 1), secondJ));
                 return res;
+            } else if ( a < 0) {
+                r = m + 1;
+            } else if (b > 0) {
+                l = m + 1;
             }
-
         }
+//        for (int i = 0; i < chains.size() - 1; i++) {
+//            int j = 0;
+//            int firstJ = -1, secondJ = -1;
+//            for (; j < chains.get(i).size() - 1; j++) {
+//                if (chains.get(i).get(j).position.y >= point.y && chains.get(i).get(j + 1).position.y <= point.y) {
+//                    firstJ = j;
+//                    break;
+//                }
+//            }j = 0;
+//            for (; j < chains.get(i + 1).size() - 1; j++) {
+//                if (chains.get(i+1).get(j).position.y >= point.y && chains.get(i+1).get(j+1).position.y <= point.y) {
+//                    secondJ = j;
+//                    break;
+//                }
+//            }
+//            if (firstJ == -1 || secondJ == -1)
+//                continue;
+//
+//            double a = Point.area(point, chains.get(i).get(firstJ).position, chains.get(i).get(firstJ+1).position);
+//            double b = Point.area(point, chains.get(i + 1).get(secondJ).position, chains.get(i + 1).get(secondJ+1).position);
+//            if ((a > 0 || abs(a) <= 1e-2) && (b < 0 || abs(b) <= 1e-2)) {
+//                ArrayList<Pair<List<GraphNode>, Integer>> res = new ArrayList<>();
+//                int iter1 = 0, iter2 = 0;
+//                ArrayList<GraphNode> i1 = chains.get(i), i2 = chains.get(i + 1);
+//                int start = -1, end = -1, start2 = -1, end2 = -1;
+//                while (iter1 < chains.get(i).size() && iter2 < chains.get(i + 1).size()) {
+//                    if (i1.get(iter1) == i2.get(iter2)) {
+//                        if (start == -1) {
+//                            start = iter1;
+//                            start2 = iter2;
+//                        } else {
+//                            end = iter1;
+//                            end2 = iter2;
+//                            if (start <= firstJ && end >= firstJ && start <= firstJ + 1 && end>= firstJ +1) {
+//                                break;
+//                            } else {
+//                                start = iter1;
+//                                start2 = iter2;
+//                            }
+//                        }
+//                    }
+//                    if (i1.get(iter1).position.y < i2.get(iter2).position.y)
+//                        iter2++;
+//                    else
+//                        iter1++;
+//                }
+//                res.add(new Pair<>(chains.get(i).subList(start, end + 1), firstJ));
+//                res.add(new Pair<>(chains.get(i + 1).subList(start2, end2 + 1), secondJ));
+//                return res;
+//            }
+//
+//        }
         return null;
     }
 }
