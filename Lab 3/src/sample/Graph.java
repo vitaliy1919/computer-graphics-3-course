@@ -53,13 +53,14 @@ public class Graph {
     }
 
     private TreeNode buildTree(ArrayList<ArrayList<Pair<TreeNode, Edge>>> treeNodes, int i,  int l, int r) {
-        if (l == r) {
+        if (r - l == 1) {
             return treeNodes.get(i).get(l).getKey();
-        }
+        } else if (l >= r)
+            return null;
         int m = l + (r - l) / 2;
         EdgeTreeNode root = new EdgeTreeNode(treeNodes.get(i).get(m).getValue());
         root.left = buildTree(treeNodes, i, l, m);
-        root.right = buildTree(treeNodes, i, m + 1, r);
+        root.right = buildTree(treeNodes, i, m, r);
         return root;
 
 
@@ -71,6 +72,9 @@ public class Graph {
         return split(points, edges, left, right);
     }
     private TreeNode split(ArrayList<GraphNode> tNodes, ArrayList<Edge> tEdges, Edge left, Edge right) {
+        if (tNodes.isEmpty()) {
+            return new LeafTreeNode(left, right, tEdges, tNodes);
+        }
         double yMedian = tNodes.get(tNodes.size() / 2 ).position.y;
 
 
@@ -93,6 +97,8 @@ public class Graph {
 
 
         for (Edge edge: tEdges) {
+            if (edge == left || edge == right)
+                continue;
             Pair<Double, GraphNode> curYMax;
             Pair<Double, GraphNode> curYMin;
 

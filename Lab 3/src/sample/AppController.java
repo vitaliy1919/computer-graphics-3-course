@@ -219,6 +219,8 @@ public class AppController implements Initializable {
     void drawPoint(Point point, int numb) {
        drawPoint(point);
        context.setStroke(Color.WHITE);
-       context.strokeText(Integer   .toString(numb), point.x -5, point.y+5);
+       context.strokeText(Integer.toString(numb), point.x -5, point.y+5);
+       context.setStroke(Color.GREEN);
+       context.strokeText("("+point.x+","+point.y+")", point.x + 5, point.y+5);
     }
 }
