@@ -4,16 +4,16 @@ import sample.Edge;
 import sample.GraphNode;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class LeafTreeNode extends TreeNode {
-    public Edge leftEdge;
-    public Edge rightEdge;
-    public ArrayList<Edge> edges = new ArrayList<>();
-    public ArrayList<GraphNode> nodes = new ArrayList<>();
+    public double yMin, yMax;
+    public ArrayList<Edge> edges;
+    public TreeSet<GraphNode> nodes;
 
-    public LeafTreeNode(Edge leftEdge, Edge rightEdge, ArrayList<Edge> edges, ArrayList<GraphNode> nodes) {
-        this.leftEdge = leftEdge;
-        this.rightEdge = rightEdge;
+    public LeafTreeNode(ArrayList<Edge> edges, TreeSet<GraphNode> nodes, double yMin, double yMax) {
+        this.yMin = yMin;
+        this.yMax = yMax;
         this.edges = edges;
         this.nodes = nodes;
     }

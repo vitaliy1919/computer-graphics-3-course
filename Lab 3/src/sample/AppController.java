@@ -141,6 +141,7 @@ public class AppController implements Initializable {
             nodes.edges.add(nodes.leftEdge);
             nodes.edges.add(nodes.rightEdge);
             for (Edge edge:nodes.edges) {
+                //if (graph.checkIfInside(nodes.))
                 context.strokeLine(edge.from.position.x, edge.from.position.y, edge.to.position.x, edge.to.position.y);
             }
             System.out.println(nodes);
