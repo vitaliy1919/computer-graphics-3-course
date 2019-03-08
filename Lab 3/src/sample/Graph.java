@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
+import static java.lang.Math.*;
 
 public class Graph {
 
@@ -32,7 +31,7 @@ public class Graph {
         nodes.sort((a, b)->{
             int comp = Double.compare(a.position.y, b.position.y);
             if (comp != 0)
-                return (comp > 0 ? -1: 1);
+                return comp;
             else
                 return Double.compare(a.position.x, b.position.x);
         });
@@ -46,15 +45,26 @@ public class Graph {
 
         edges.sort((a,b) -> {
             double minA = Math.min(a.to.position.x, a.from.position.x);
+            double maxA = Math.min(a.to.position.y, a.from.position.y);
             double minB = Math.min(b.to.position.x, b.from.position.x);
-            return Double.compare(minA, minB);
+            double maxB = Math.min(b.to.position.y, b.from.position.y);
+
+            int comp =  Double.compare(minA, minB);
+            if (comp != 0)
+                return comp;
+            else
+                return Double.compare(maxA, maxB);
         });
 
     }
 
     private TreeNode buildTree(ArrayList<ArrayList<Pair<TreeNode, Edge>>> treeNodes, int i,  int l, int r) {
         if (r - l == 1) {
-            return treeNodes.get(i).get(l).getKey();
+            EdgeTreeNode treeNode = new EdgeTreeNode(treeNodes.get(i).get(l).getValue());
+            treeNode.left = treeNodes.get(i).get(l).getKey();
+            if (r < treeNodes.get(i).size())
+                treeNode.right = treeNodes.get(i).get(r).getKey();
+            return treeNode;
         } else if (l >= r)
             return null;
         int m = l + (r - l) / 2;
@@ -71,6 +81,42 @@ public class Graph {
         Edge left = edges.get(0), right = edges.get(edges.size() - 1);
         return split(points, edges, left, right);
     }
+
+    public LeafTreeNode findInGraph(TreeNode node, Point point) {
+
+        do {
+            if (node instanceof VerticalTreeNode) {
+                VerticalTreeNode verticalTreeNode = (VerticalTreeNode)node;
+                if (point.y < verticalTreeNode.y)
+                    node = node.left;
+                else
+                    node = node.right;
+            } else if (node instanceof EdgeTreeNode) {
+                EdgeTreeNode edgeTreeNode = (EdgeTreeNode) node;
+                GraphNode left, right;
+                if (edgeTreeNode.edge.to.position.x > edgeTreeNode.edge.from.position.x) {
+                    left = edgeTreeNode.edge.from;
+                    right = edgeTreeNode.edge.to;
+                } else {
+                    right = edgeTreeNode.edge.from;
+                    left = edgeTreeNode.edge.to;
+                }
+                double area = Point.area(point, left.position, right.position);
+                if (area < 0) {
+                    node = node.left;
+                } else {
+                    node = node.right;
+                }
+            } else if (node instanceof LeafTreeNode) {
+                return (LeafTreeNode)node;
+            }
+
+        } while (node != null);
+        return null;
+    }
+    private boolean equal(double a, double b) {
+        return abs(a - b) < 1e-2;
+    }
     private TreeNode split(ArrayList<GraphNode> tNodes, ArrayList<Edge> tEdges, Edge left, Edge right) {
         if (tNodes.isEmpty()) {
             return new LeafTreeNode(left, right, tEdges, tNodes);
@@ -82,7 +128,10 @@ public class Graph {
         double yMax[] = {yMedian, tNodes.get(tNodes.size() -1).position.y };
         double yMin[] = {tNodes.get(0).position.y, yMedian};
         nodes.add(new ArrayList<>());
+        nodes.get(0).add(left.from.position.x > left.to.position.x ? left.to : left.from);
         nodes.add(new ArrayList<>());
+        nodes.get(1).add(left.from.position.x > left.to.position.x ? left.to : left.from);
+
         ArrayList<ArrayList<Edge>> edges = new ArrayList<>(2);
         edges.add(new ArrayList<>());
         edges.add(new ArrayList<>());
@@ -110,11 +159,13 @@ public class Graph {
                 curYMax = new Pair<>(edge.from.position.y, edge.from);
             }
             for (int i = 0; i < 2; i++) {
-                if (curYMin.getKey() <= yMax[i] && curYMin.getKey() >= yMin[i] ||
-                    curYMax.getKey() <= yMax[i] && curYMax.getKey() >= yMin[i]) {
+                if ((curYMin.getKey() < yMax[i]) && (curYMin.getKey() > yMin[i])  ||
+                        (curYMax.getKey() < yMax[i]) && (curYMax.getKey() > yMin[i]) ) {
                     edges.get(i).add(edge);
                     nodes.get(i).add(curYMin.getValue());
-                } else if (curYMin.getKey() <= yMin[i] && curYMax.getKey() >= yMax[i]) {
+                } else if ((curYMin.getKey() < yMin[i] || equal(curYMin.getKey(), yMin[i])) && (curYMax.getKey() >= yMax[i] || equal(curYMax.getKey(), yMax[i]))){
+                    nodes.get(i).add(edge.from);
+                    nodes.get(i).add(edge.to);
                     sort(nodes.get(i));
                     TreeNode leftNode = split(nodes.get(i), edges.get(i), currentLeftEdge.get(i), edge);
                     treeNodes.get(i).add(new Pair<>(leftNode, edge));
@@ -122,6 +173,7 @@ public class Graph {
 
                     nodes.get(i).clear();
                     edges.get(i).clear();
+                    nodes.get(i).add(edge.from.position.x > edge.to.position.x ? edge.to : edge.from);
                 }
             }
         }

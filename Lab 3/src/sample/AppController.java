@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import sample.Tree.LeafTreeNode;
 import sample.Tree.TreeNode;
 
 
@@ -134,6 +135,15 @@ public class AppController implements Initializable {
 
             drawGraph();
             TreeNode gSplit = graph.split();
+
+            LeafTreeNode nodes = graph.findInGraph(gSplit, point);
+            context.setStroke(Color.BLUE);
+            nodes.edges.add(nodes.leftEdge);
+            nodes.edges.add(nodes.rightEdge);
+            for (Edge edge:nodes.edges) {
+                context.strokeLine(edge.from.position.x, edge.from.position.y, edge.to.position.x, edge.to.position.y);
+            }
+            System.out.println(nodes);
 
         }
     }
