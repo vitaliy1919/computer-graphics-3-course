@@ -66,15 +66,16 @@ public class Graph {
 
     private TreeNode buildTree(ArrayList<ArrayList<Pair<TreeNode, Edge>>> treeNodes, int i,  int l, int r) {
         if (r - l == 1) {
-            EdgeTreeNode treeNode = new EdgeTreeNode(treeNodes.get(i).get(l).getValue());
-            treeNode.left = treeNodes.get(i).get(l).getKey();
-            if (r < treeNodes.get(i).size())
-                treeNode.right = treeNodes.get(i).get(r).getKey();
-            return treeNode;
+            return treeNodes.get(i).get(l).getKey();
+//            EdgeTreeNode treeNode = new EdgeTreeNode(treeNodes.get(i).get(l).getValue());
+//            treeNode.left = treeNodes.get(i).get(l).getKey();
+//            if (r < treeNodes.get(i).size() && r - l == 2)
+//                treeNode.right = treeNodes.get(i).get(r).getKey();
+//            return treeNode;
         } else if (l >= r)
             return null;
         int m = l + (r - l) / 2;
-        EdgeTreeNode root = new EdgeTreeNode(treeNodes.get(i).get(m).getValue());
+        EdgeTreeNode root = new EdgeTreeNode(treeNodes.get(i).get(m - 1).getValue());
         root.left = buildTree(treeNodes, i, l, m);
         root.right = buildTree(treeNodes, i, m, r);
         return root;
@@ -85,7 +86,8 @@ public class Graph {
     public TreeNode split() {
         sort();
         Edge left = edges.get(0), right = edges.get(edges.size() - 1);
-        return split(sPoints, edges, left, right);
+        double yMin = sPoints.first().position.y, yMax = sPoints.last().position.y;
+        return split(sPoints, edges, yMin, yMax);
     }
 
     public LeafTreeNode findInGraph(TreeNode node, Point point) {
@@ -133,16 +135,19 @@ public class Graph {
     }
 
     private TreeNode split(TreeSet<GraphNode> tNodes, ArrayList<Edge> tEdges, double yDown, double yUp) {
-        if (tNodes.isEmpty() || tEdges.size() <= 2 ) {
+        if (tEdges.size() <= 2 ) {
             return new LeafTreeNode(tEdges, tNodes, yDown, yUp);
         }
         Iterator<GraphNode> iter = tNodes.iterator();
-        for (int i = 0; i < tNodes.size() / 2 - 1 ; i++) {
-            iter.next();
+        double prev = 0;
+        for (int i = 0; i < tNodes.size() / 2 ; i++) {
+            prev = iter.next().position.y;
         }
         double yMedian = iter.next().position.y;
-
-
+        if (tNodes.size() % 2 == 0) {
+            yMedian += prev;
+            yMedian /= 2;
+        }
         ArrayList<TreeSet<GraphNode>> nodes = new ArrayList<>(2);
         double[] yMax = {yMedian, tNodes.last().position.y};
         double[] yMin = {tNodes.first().position.y, yMedian};
@@ -174,7 +179,35 @@ public class Graph {
                 curYMax = new Pair<>(edge.from.position.y, edge.from);
             }
             for (int i = 0; i < 2; i++) {
-                if (checkIfInsideStrictly(yMin[i], yMax[i], curYMin.getValue())  ||
+                if ((curYMin.getKey() < yMin[i] || equal(curYMin.getKey(), yMin[i])) &&
+                        (curYMax.getKey() > yMax[i] || equal(curYMax.getKey(), yMax[i])) ||
+                        edge == tEdges.get(0) || edge == tEdges.get(tEdges.size() - 1)){
+                    edges.get(i).add(edge);
+
+                    if (checkIfInside(yMin[i], yMax[i], edge.from))
+                        nodes.get(i).add(edge.from);
+
+                    if (checkIfInside(yMin[i], yMax[i], edge.to))
+                        nodes.get(i).add(edge.to);
+
+
+                    if (currentLeftEdge.get(i) == null) {
+                        currentLeftEdge.set(i, edge);
+                        continue;
+                    }
+                    TreeNode leftNode = split(nodes.get(i), edges.get(i), yMin[i], yMax[i]);
+                    treeNodes.get(i).add(new Pair<>(leftNode, edge));
+                    currentLeftEdge.set(i, edge);
+
+                    nodes.set(i, new TreeSet<>(compY));
+                    edges.set(i, new ArrayList<>());
+                    edges.get(i).add(edge);
+                    if (checkIfInside(yMin[i], yMax[i], edge.from))
+                        nodes.get(i).add(edge.from);
+
+                    if (checkIfInside(yMin[i], yMax[i], edge.to))
+                        nodes.get(i).add(edge.to);
+                } else if (checkIfInsideStrictly(yMin[i], yMax[i], curYMin.getValue())  ||
                         checkIfInsideStrictly(yMin[i], yMax[i], curYMax.getValue()) ) {
                     edges.get(i).add(edge);
                     if (checkIfInside(yMin[i], yMax[i], edge.from))
@@ -182,26 +215,11 @@ public class Graph {
 
                     if (checkIfInside(yMin[i], yMax[i], edge.to))
                         nodes.get(i).add(edge.to);
-                } else if ((curYMin.getKey() < yMin[i] || equal(curYMin.getKey(), yMin[i])) &&
-                           (curYMax.getKey() >= yMax[i] || equal(curYMax.getKey(), yMax[i]))){
-
-                    nodes.get(i).add(edge.from);
-                    nodes.get(i).add(edge.to);
-                    TreeNode leftNode;
-                    if (leftNode)
-                    leftNode = split(nodes.get(i), edges.get(i), currentLeftEdge.get(i), edge);
-                    treeNodes.get(i).add(new Pair<>(leftNode, edge));
-                    currentLeftEdge.set(i, edge);
-
-                    nodes.get(i).clear();
-                    edges.get(i).clear();
-                    nodes.get(i).add(edge.from);
-                    nodes.get(i).add(edge.to);
                 }
             }
         }
         if (treeNodes.get(0).isEmpty() && treeNodes.get(1).isEmpty()) {
-            return new LeafTreeNode(left, right, tEdges, tNodes);
+            return new LeafTreeNode(tEdges, tNodes, yDown, yUp);
         }
 
         TreeNode root = new VerticalTreeNode(yMedian);
@@ -209,7 +227,7 @@ public class Graph {
         sideNodes.add(null); sideNodes.add(null);
         for (int i = 0; i < 2; i++) {
             if (treeNodes.get(i).isEmpty())
-                sideNodes.set(i, new LeafTreeNode(left, right, edges.get(i), nodes.get(i)));
+                sideNodes.set(i, new LeafTreeNode(edges.get(i), nodes.get(i), yMin[i], yMax[i]));
             else
                 sideNodes.set(i, buildTree(treeNodes, i, 0, treeNodes.get(i).size()));
         }

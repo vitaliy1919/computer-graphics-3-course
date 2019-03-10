@@ -138,10 +138,10 @@ public class AppController implements Initializable {
 
             LeafTreeNode nodes = graph.findInGraph(gSplit, point);
             context.setStroke(Color.BLUE);
-            nodes.edges.add(nodes.leftEdge);
-            nodes.edges.add(nodes.rightEdge);
+
             for (Edge edge:nodes.edges) {
-                //if (graph.checkIfInside(nodes.))
+                //(graph.checkIfInside(nodes.yMin, nodes.yMax)
+
                 context.strokeLine(edge.from.position.x, edge.from.position.y, edge.to.position.x, edge.to.position.y);
             }
             System.out.println(nodes);
