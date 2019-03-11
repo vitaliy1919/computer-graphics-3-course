@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem fx:id="saveAction" mnemonicParsing="false" text="Save" />
+                  <MenuItem fx:id="loadAction" mnemonicParsing="false" onAction="#onOpenFile" text="Load" />
+                  <MenuItem mnemonicParsing="false" onAction="#onReset" text="Reset" />
+               </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <Canvas fx:id="canvas" height="343.0" onMouseClicked="#canvasClick" width="602.0" />
+   </center>
+   <bottom>
+      <Label fx:id="label" prefHeight="20.0" prefWidth="500.0" text="Label" textAlignment="JUSTIFY" wrapText="true" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="16.0" />
+         </BorderPane.margin>
+      </Label>
+   </bottom>
+   <right>
+      <Button fx:id="nextButton" mnemonicParsing="false" onMouseClicked="#nextButtonClick" text="Готово" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets right="15.0" />
+         </BorderPane.margin>
+      </Button>
+   </right>
+   <left>
+      <TextField fx:id="input" onKeyReleased="#onTextEnter" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets left="15.0" />
+         </BorderPane.margin>
+      </TextField>
+   </left>
+</BorderPane>
