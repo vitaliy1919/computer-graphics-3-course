@@ -51,7 +51,7 @@ public class AppController implements Initializable {
 
 
     private List<Point> quickHull(List<Point> a, Point l, Point r) {
-        if (a.get(0).equals(l) && a.get(1).equals(r)
+        if (a.size() == 2 && a.get(0).equals(l) && a.get(1).equals(r)
         || a.get(1).equals(l) && a.get(0).equals(r)) {
             List<Point> list = new LinkedList<>();
             list.add(l);
