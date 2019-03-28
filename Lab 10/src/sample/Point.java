@@ -15,12 +15,15 @@ public class Point implements Comparable<Point> {
 
     @Override
     public int compareTo(Point point) {
-        int comp = Double.compare(y, point.y);
+        int comp = Double.compare(x, point.x);
         if (comp != 0)
             return comp;
-        return Double.compare(x, point.x);
+        return Double.compare(y, point.y);
     }
 
+    public double length() {
+        return sqrt(x*x+ y*y);
+    }
     public Point(double x, double y) {
         this.x = x;
         this.y = y;

@@ -15,14 +15,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.TreeSet;
+import java.util.*;
 
 import static java.lang.Math.min;
 import static java.lang.Math.sqrt;
@@ -64,6 +62,7 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         context = canvas.getGraphicsContext2D();
+        context.setFont(new Font(null,10));
        onReset(null);
     }
 
@@ -119,8 +118,9 @@ public class AppController implements Initializable {
             BufferedReader reader = new BufferedReader(new FileReader("int.txt"));
             String s;
             while ((s = reader.readLine()) != null) {
-                Scanner scan = new Scanner(s);
-                double x = scan.nextDouble(), y = scan.nextDouble();
+                Scanner scan = new Scanner(s).useLocale(Locale.US);;
+                double x = scan.nextDouble();
+                double y = scan.nextDouble();
                 points.add(new Point(x, y));
             }
             reader.close();
@@ -155,6 +155,8 @@ public class AppController implements Initializable {
 
     public ArrayList<Edge> deloneTriangulation(ArrayList<Point> points) {
         Edge startEdge = hullEdge(points, 0, points.size());
+        if (startEdge.start.y < startEdge.end.y)
+            startEdge = new Edge(startEdge.end, startEdge.start);
         ArrayList<Edge> result = new ArrayList<>();
         TreeSet<Edge> liveEdges = new TreeSet<>((a, b)->{
             int comp = a.start.compareTo(b.start);
@@ -167,8 +169,11 @@ public class AppController implements Initializable {
         result.add(startEdge);
 
         //line.drawLine(context);
-        while (!liveEdges.isEmpty()) {
+        int steps = 0;
+        while (!liveEdges.isEmpty() && steps < 5000) {
             Edge edge = liveEdges.first();
+            if (Point.equal(edge.start.x, 87.0))
+                System.out.println("Done");
             liveEdges.remove(edge);
             Point point = findPoint(points, edge);
             if (point != null) {
@@ -178,7 +183,9 @@ public class AppController implements Initializable {
                 result.add(new Edge(edge.end, point));
 
             }
+            steps++;
         }
+        System.out.println("steps: " + steps);
         return result;
     }
 
@@ -200,9 +207,13 @@ public class AppController implements Initializable {
                 NormalLine secondBisector = NormalLine.bisector(edge1);
                 //secondBisector.drawLine(context);
                 Point intersection = edgeBisector.intersect(secondBisector);
-                if (curBestPoint == null || curMax > intersection.x) {
+                Point vector = new Point (intersection.x - edge.start.x, intersection.y - edge.start.y);
+                double curRadius = vector.length();
+                if (Point.area(edge.start, edge.end, intersection) < 0)
+                    curRadius = -curRadius;
+                if (curBestPoint == null || curMax > curRadius) {
                     curBestPoint = point;
-                    curMax = intersection.x;
+                    curMax = curRadius;
                 }
             }
         }
@@ -283,7 +294,7 @@ public class AppController implements Initializable {
         double x = point.x;
         double y = point.y;
         context.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
-        context.strokeText("("+point.x+","+point.y+")", point.x + 5, point.y+5);
+        //context.strokeText("("+point.x+","+point.y+")", point.x + 5, point.y+5);
 
     }
 
@@ -291,9 +302,9 @@ public class AppController implements Initializable {
 
     private void drawPoint(Point point, int numb) {
        drawPoint(point);
-       context.setStroke(Color.WHITE);
-       context.strokeText(Integer.toString(numb), point.x -5, point.y+5);
-       context.setStroke(Color.GREEN);
-       context.strokeText("("+point.x+","+point.y+")", point.x + 5, point.y+5);
+//       context.setStroke(Color.WHITE);
+//       context.strokeText(Integer.toString(numb), point.x -5, point.y+5);
+//       context.setStroke(Color.GREEN);
+//       context.strokeText("("+point.x+","+point.y+")", point.x + 5, point.y+5);
     }
 }
