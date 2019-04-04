@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cfdd6e80-09d8-43a7-a042-d1e3eaea9b5b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/int.txt" beforeDir="false" afterPath="$PROJECT_DIR$/int.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/AppController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/AppController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Edge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Edge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Point.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Lab 8/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab 8/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sample/AppController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="307">
-              <caret line="302" column="51" lean-forward="true" selection-start-line="302" selection-start-column="51" selection-end-line="302" selection-end-column="51" />
+            <state relative-caret-position="290">
+              <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -148,7 +144,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553806301755" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553940211270" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
@@ -199,6 +195,14 @@
       <updated>1553783063578</updated>
       <workItem from="1553783064863" duration="8104000" />
     </task>
+    <task id="LOCAL-00001" summary="Fix bugs with choosing of the next point">
+      <created>1553806548967</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1553806548967</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -217,8 +221,8 @@
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4979757" visible="true" weight="0.15488432" />
-      <window_info id="Structure" order="1" sideWeight="0.5020243" side_tool="true" visible="true" weight="0.15488432" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49799198" visible="true" weight="0.15488432" />
+      <window_info id="Structure" order="1" sideWeight="0.502008" side_tool="true" visible="true" weight="0.15488432" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
@@ -226,7 +230,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33512786" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4993573" weight="0.33512786" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.38761777" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -235,7 +239,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32974428" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.32974428" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info active="true" anchor="bottom" id="Event Log" order="11" sideWeight="0.50064266" side_tool="true" visible="true" weight="0.32974428" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32961932" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -250,6 +254,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fix bugs with choosing of the next point" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bugs with choosing of the next point" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -350,8 +358,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/AppController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="307">
-          <caret line="302" column="51" lean-forward="true" selection-start-line="302" selection-start-column="51" selection-end-line="302" selection-end-column="51" />
+        <state relative-caret-position="290">
+          <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
