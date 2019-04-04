@@ -53,7 +53,7 @@ public class AppController implements Initializable {
     private boolean rectangleInput = false;
     private boolean rectangleInputEnded;
 
-
+    boolean debug = false;
     public AppController(Stage stage) {
         this.stage = stage;
     }
@@ -172,10 +172,9 @@ public class AppController implements Initializable {
         int steps = 0;
         while (!liveEdges.isEmpty() && steps < 5000) {
             Edge edge = liveEdges.first();
-            if (Point.equal(edge.start.x, 87.0))
-                System.out.println("Done");
             liveEdges.remove(edge);
             Point point = findPoint(points, edge);
+            debug = false;
             if (point != null) {
                 addLiveEdge(liveEdges,  point, edge.start);
                 addLiveEdge(liveEdges, edge.end,point);
@@ -205,7 +204,7 @@ public class AppController implements Initializable {
             if (Point.area(edge.start, edge.end, point) > 0) {
                 Edge edge1 = new Edge(edge.end, point);
                 NormalLine secondBisector = NormalLine.bisector(edge1);
-                //secondBisector.drawLine(context);
+
                 Point intersection = edgeBisector.intersect(secondBisector);
                 Point vector = new Point (intersection.x - edge.start.x, intersection.y - edge.start.y);
                 double curRadius = vector.length();
@@ -294,7 +293,7 @@ public class AppController implements Initializable {
         double x = point.x;
         double y = point.y;
         context.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
-        //context.strokeText("("+point.x+","+point.y+")", point.x + 5, point.y+5);
+//        context.strokeText("("+point.x+","+point.y+")", point.x + 5, point.y+5);
 
     }
 
